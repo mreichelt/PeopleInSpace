@@ -1,14 +1,11 @@
 package com.surrus.common.repository
 
 import co.touchlab.kermit.Kermit
-import com.squareup.sqldelight.runtime.coroutines.asFlow
-import com.squareup.sqldelight.runtime.coroutines.mapToList
 import com.surrus.common.model.personBios
 import com.surrus.common.model.personImages
 import com.surrus.common.remote.Assignment
 import com.surrus.common.remote.IssPosition
 import com.surrus.common.remote.PeopleInSpaceApi
-import com.surrus.peopleinspace.db.PeopleInSpaceDatabase
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -18,13 +15,11 @@ import org.koin.core.KoinComponent
 import org.koin.core.inject
 
 
-class PeopleInSpaceRepository() : KoinComponent {
+class PeopleInSpaceRepository : KoinComponent {
     private val peopleInSpaceApi: PeopleInSpaceApi by inject()
     private val logger: Kermit by inject()
 
     private val coroutineScope: CoroutineScope = MainScope()
-    private val peopleInSpaceDatabase = createDb()
-    private val peopleInSpaceQueries = peopleInSpaceDatabase?.peopleInSpaceQueries
 
     var peopleJob: Job? = null
     var issPositionJob: Job? = null
@@ -36,11 +31,7 @@ class PeopleInSpaceRepository() : KoinComponent {
     }
 
     fun fetchPeopleAsFlow(): Flow<List<Assignment>> {
-        // the main reason we need to do this check is that sqldelight isn't currently
-        // setup for javascript client
-        return peopleInSpaceQueries?.selectAll(mapper = { name, craft ->
-            Assignment(name = name, craft = craft)
-        })?.asFlow()?.mapToList() ?: flowOf(emptyList<Assignment>())
+        return flowOf(emptyList())
     }
 
     private suspend fun fetchAndStorePeople()  {
@@ -49,9 +40,9 @@ class PeopleInSpaceRepository() : KoinComponent {
 
         // this is very basic implementation for now that removes all existing rows
         // in db and then inserts results from api request
-        peopleInSpaceQueries?.deleteAll()
+//        peopleInSpaceQueries?.deleteAll()
         result.people.forEach {
-            peopleInSpaceQueries?.insertItem(it.name, it.craft)
+//            peopleInSpaceQueries?.insertItem(it.name, it.craft)
         }
     }
 

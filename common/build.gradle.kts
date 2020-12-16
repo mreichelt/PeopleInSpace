@@ -110,6 +110,10 @@ kotlin {
             implementation(Ktor.clientCio)
         }
 
+        sourceSets["linuxMain"].dependencies {
+            implementation(Ktor.clientCio)
+        }
+
         sourceSets["jsMain"].dependencies {
             implementation(Ktor.clientJs)
         }

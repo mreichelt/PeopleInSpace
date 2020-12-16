@@ -41,6 +41,7 @@ kotlin {
     }
 
     macosX64("macOS")
+    linuxX64("linux")
     android()
     jvm()
 
